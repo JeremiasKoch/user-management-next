@@ -101,64 +101,75 @@ export const TableToggle = ({
             </div>
           )}
 
-          <table className="min-w-full mt-2 ">
-            <thead>
-              <tr>
-                {columns.map((col) => (
-                  <th
-                    key={col.key}
-                    className="border border-gray-400 px-4 py-2 text-left text-sm font-medium text-gray-700"
-                  >
-                    {col.label}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedData.map((character) => (
-                <tr
-                  key={character.id}
-                  className="hover:bg-gray-200 transition-colors duration-200"
-                >
-                  {columns.map((col) => (
-                    <td
-                      key={col.key}
-                      className="border border-gray-400 px-4 py-2 text-sm text-gray-700"
+          {paginatedData.length === 0 ? (
+            <p className="mt-4 text-center text-gray-500 italic">
+              No characters found with these filters.
+            </p>
+          ) : (
+            <>
+              <table className="min-w-full mt-2">
+                <thead>
+                  <tr>
+                    {columns.map((col) => (
+                      <th
+                        key={col.key}
+                        className="border border-gray-400 px-4 py-2 text-left text-sm font-medium text-gray-700"
+                      >
+                        {col.label}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginatedData.map((character) => (
+                    <tr
+                      key={character.id}
+                      className="hover:bg-gray-200 transition-colors duration-200"
                     >
-                      {String(character[col.key as keyof Character])}
-                    </td>
+                      {columns.map((col) => (
+                        <td
+                          key={col.key}
+                          className="border border-gray-400 px-4 py-2 text-sm text-gray-700"
+                        >
+                          {String(character[col.key as keyof Character])}
+                        </td>
+                      ))}
+                    </tr>
                   ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                </tbody>
+              </table>
 
-          {!hasFilters && !isLoading && (
-            <div className="flex gap-2 mt-2 items-center">
-              <button
-                onClick={() => {
-                  onPageChange(page - 1);
-                  addLog('Previous page clicked', { tableId, page: page - 1 });
-                }}
-                disabled={page === 1}
-                className="px-2 py-1 bg-gray-300 rounded disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <span>
-                Page {page} of {totalVisiblePages}
-              </span>
-              <button
-                onClick={() => {
-                  onPageChange(page + 1);
-                  addLog('Next page clicked', { tableId, page: page + 1 });
-                }}
-                disabled={page === totalVisiblePages}
-                className="px-2 py-1 bg-gray-300 rounded disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
+              {!hasFilters && !isLoading && (
+                <div className="flex gap-2 mt-2 items-center">
+                  <button
+                    onClick={() => {
+                      onPageChange(page - 1);
+                      addLog('Previous page clicked', {
+                        tableId,
+                        page: page - 1,
+                      });
+                    }}
+                    disabled={page === 1}
+                    className="px-2 py-1 bg-gray-300 rounded disabled:opacity-50"
+                  >
+                    Previous
+                  </button>
+                  <span>
+                    Page {page} of {totalVisiblePages}
+                  </span>
+                  <button
+                    onClick={() => {
+                      onPageChange(page + 1);
+                      addLog('Next page clicked', { tableId, page: page + 1 });
+                    }}
+                    disabled={page === totalVisiblePages}
+                    className="px-2 py-1 bg-gray-300 rounded disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </>
       )}
