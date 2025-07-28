@@ -1,15 +1,18 @@
 'use client';
 
-import { useMemo } from 'react';
-import { Character, CharacterListResponse } from '@/api';
+import { CharacterListResponse } from '@/api';
 import { ArrowDown } from '../icons';
 import { FilterType } from '@/types';
-import CharacterFilters from '../CharactersFilters';
-import { useRickAndMortyFilterStore } from '@/store/rickAndMortyFilters';
-import { useDebounce } from '@/utils/debounce';
+
 import { useLogStore } from '@/store/useLogStore';
 import { usePaginationStore } from '@/store/usePaginationStore';
-import { TableSkeleton } from '../LoaderSkeleton';
+import { useFilteredCharacters } from '@/hooks';
+import {
+  CharacterTableBody,
+  TableSkeleton,
+  CharacterFilters,
+  PaginationControls,
+} from '@/components';
 
 type TableToggleProps = {
   tableId: string;
@@ -41,37 +44,9 @@ export const TableToggle = ({
 
   const addLog = useLogStore((state) => state.addLog);
 
-  const allData = useMemo(() => data?.results || [], [data]);
-
-  const filtersMap = useRickAndMortyFilterStore((state) => state.filters);
-  const filters = filtersMap[tableId] || { name: '', status: '', gender: '' };
-
-  const nameFilter = useDebounce(filters.name.toLowerCase(), 400);
-  const statusFilter = filters.status.toLowerCase();
-  const genderFilter = filters.gender.toLowerCase();
-
-  const hasFilters = !!nameFilter || !!statusFilter || !!genderFilter;
-
-  const filteredData = useMemo(() => {
-    if (!hasFilters) return allData;
-
-    return allData.filter((character) => {
-      const matchesName = nameFilter
-        ? character.name.toLowerCase().includes(nameFilter)
-        : true;
-      const matchesStatus = statusFilter
-        ? character.status.toLowerCase() === statusFilter
-        : true;
-      const matchesGender = genderFilter
-        ? character.gender.toLowerCase() === genderFilter
-        : true;
-
-      return matchesName && matchesStatus && matchesGender;
-    });
-  }, [allData, nameFilter, statusFilter, genderFilter, hasFilters]);
+  const { paginatedData, hasFilters } = useFilteredCharacters(tableId, data);
 
   const totalVisiblePages = totalPages;
-  const paginatedData = hasFilters ? filteredData : allData;
   if (isLoading) return <TableSkeleton columns={columns.length} />;
 
   return (
@@ -107,67 +82,15 @@ export const TableToggle = ({
             </p>
           ) : (
             <>
-              <table className="min-w-full mt-2">
-                <thead>
-                  <tr>
-                    {columns.map((col) => (
-                      <th
-                        key={col.key}
-                        className="border border-gray-400 px-4 py-2 text-left text-sm font-medium text-gray-700"
-                      >
-                        {col.label}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {paginatedData.map((character) => (
-                    <tr
-                      key={character.id}
-                      className="hover:bg-gray-200 transition-colors duration-200"
-                    >
-                      {columns.map((col) => (
-                        <td
-                          key={col.key}
-                          className="border border-gray-400 px-4 py-2 text-sm text-gray-700"
-                        >
-                          {String(character[col.key as keyof Character])}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <CharacterTableBody data={paginatedData} columns={columns} />
 
               {!hasFilters && !isLoading && (
-                <div className="flex gap-2 mt-2 items-center">
-                  <button
-                    onClick={() => {
-                      onPageChange(page - 1);
-                      addLog('Previous page clicked', {
-                        tableId,
-                        page: page - 1,
-                      });
-                    }}
-                    disabled={page === 1}
-                    className="px-2 py-1 bg-gray-300 rounded disabled:opacity-50"
-                  >
-                    Previous
-                  </button>
-                  <span>
-                    Page {page} of {totalVisiblePages}
-                  </span>
-                  <button
-                    onClick={() => {
-                      onPageChange(page + 1);
-                      addLog('Next page clicked', { tableId, page: page + 1 });
-                    }}
-                    disabled={page === totalVisiblePages}
-                    className="px-2 py-1 bg-gray-300 rounded disabled:opacity-50"
-                  >
-                    Next
-                  </button>
-                </div>
+                <PaginationControls
+                  page={page}
+                  totalPages={totalVisiblePages}
+                  tableId={tableId}
+                  onPageChange={onPageChange}
+                />
               )}
             </>
           )}

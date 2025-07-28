@@ -9,7 +9,10 @@ type CharacterFiltersProps = {
   tableId: string;
 };
 
-const CharacterFilters = ({ filterTypes, tableId }: CharacterFiltersProps) => {
+export const CharacterFilters = ({
+  filterTypes,
+  tableId,
+}: CharacterFiltersProps) => {
   const filtersMap = useRickAndMortyFilterStore((state) => state.filters);
   const filters = filtersMap[tableId] || { name: '', status: '', gender: '' };
   const setFilter = useRickAndMortyFilterStore((state) => state.setFilter);
