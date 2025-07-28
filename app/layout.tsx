@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { QueryProvider } from '@/api/reactQueryProvider';
+
+import { HomeLink } from '@/components';
 
 export const metadata: Metadata = {
   title: 'User management App',
@@ -13,7 +16,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-gray-500 min-h-screen ">{children}</body>
+      <body className="bg-gray-200 min-h-screen px-5 py-6">
+        <QueryProvider>
+          <div className="flex flex-col">
+            <HomeLink />
+            {children}
+          </div>
+        </QueryProvider>
+      </body>
     </html>
   );
 }
