@@ -1,6 +1,6 @@
 'use client';
 
-import { useUserStore } from '@/app/store';
+import { useUserStore } from '@/store';
 import { Button } from '@/components';
 
 export const UserList = () => {

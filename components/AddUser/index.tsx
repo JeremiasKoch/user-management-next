@@ -1,6 +1,6 @@
 'use client';
 
-import { useErrorStore, useUserStore } from '@/app/store';
+import { useErrorStore, useUserStore } from '@/store';
 import { validationForm } from '@/utils';
 import { FormEvent } from 'react';
 import { Button } from '@/components';

@@ -1,6 +1,6 @@
 'use client';
 
-import { useErrorStore } from '@/app/store';
+import { useErrorStore } from '@/store';
 import { useEffect, useRef } from 'react';
 import { Button } from '@/components';
 
