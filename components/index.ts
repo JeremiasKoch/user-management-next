@@ -2,7 +2,6 @@ export * from './AddUser/index';
 export * from './Button/index';
 export * from './CharactersFilters/index';
 export * from './ErrorDialog/index';
-export * from './ErrorFallback/index';
 export * from './HomeLink/index';
 export * from './LoaderSkeleton/index';
 export * from './RickAndMortyShell/index';
