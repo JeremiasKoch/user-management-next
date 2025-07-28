@@ -1,5 +1,9 @@
 import { create } from 'zustand';
-import { ErrorT } from './types';
+
+type ErrorT = {
+  title: string;
+  message: string;
+};
 
 type ErrorStoreT = {
   error: ErrorT | null;

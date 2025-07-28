@@ -1,5 +1,9 @@
 import { create } from 'zustand';
-import { UserT } from './types';
+
+type UserT = {
+  userName: string;
+  age: number;
+};
 
 type UserStoreT = {
   users: UserT[];
