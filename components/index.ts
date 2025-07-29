@@ -1,7 +1,6 @@
 export * from './AddUser/index';
 export * from './Button/index';
 export * from './CharacterTableBody/index';
-export * from './CharactersFilters/index';
 export * from './ErrorDialog/index';
 export * from './HomeLink/index';
 export * from './LoaderSkeleton/index';
