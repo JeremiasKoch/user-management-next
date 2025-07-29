@@ -1,95 +1,92 @@
 'use client';
 
-import { CharacterListResponse } from '@/api';
+import { useState, useEffect, ReactNode } from 'react';
 import { ArrowDown } from '../icons';
-import { FilterType } from '@/types';
-
-import { useLogStore } from '@/store/useLogStore';
-import { usePaginationStore } from '@/store/usePaginationStore';
-import { useFilteredCharacters } from '@/hooks';
 import {
   CharacterTableBody,
   TableSkeleton,
-  CharacterFilters,
   PaginationControls,
 } from '@/components';
 
-type TableToggleProps = {
-  tableId: string;
-  columns: { key: string; label: string }[];
+export type TableToggleProps<T> = {
   title?: string;
-  filterTypes?: FilterType[];
-  data: CharacterListResponse;
-  page: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
+  columns: { key: string; label: string }[];
+  data: T[];
+  pageSize?: number;
   isLoading?: boolean;
+  manualPagination?: boolean;
+  page?: number;
+  totalPages?: number;
+  onPageChange?: (page: number) => void;
+
+  children?: ReactNode;
 };
 
-export const TableToggle = ({
-  tableId,
-  columns,
+export const TableToggle = <T,>({
   title,
-  filterTypes,
+  columns,
   data,
-  page,
-  totalPages,
-  onPageChange,
+  pageSize = 10,
   isLoading = false,
-}: TableToggleProps) => {
-  const isTableVisible = usePaginationStore(
-    (s) => s.visibility[tableId] ?? false
-  );
-  const toggleVisibility = usePaginationStore((s) => s.toggleVisibility);
+  manualPagination = false,
+  page: externalPage,
+  totalPages: externalTotalPages,
+  onPageChange,
+  children,
+}: TableToggleProps<T>) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [internalPage, setInternalPage] = useState(1);
 
-  const addLog = useLogStore((state) => state.addLog);
+  const page = manualPagination ? externalPage || 1 : internalPage;
+  const totalPages = manualPagination
+    ? externalTotalPages || 1
+    : Math.ceil(data.length / pageSize);
 
-  const { paginatedData, hasFilters } = useFilteredCharacters(tableId, data);
+  useEffect(() => {
+    if (!manualPagination) setInternalPage(1);
+  }, [data, manualPagination]);
 
-  const totalVisiblePages = totalPages;
+  const paginated = manualPagination
+    ? data
+    : data.slice((page - 1) * pageSize, page * pageSize);
+
   if (isLoading) return <TableSkeleton columns={columns.length} />;
 
   return (
     <div className="p-0.5 bg-gray-100">
       <button
-        onClick={() => {
-          addLog(`${isTableVisible ? 'Closed' : 'Opened'} table`, { tableId });
-          toggleVisibility(tableId);
-        }}
+        onClick={() => setIsVisible((prevIsVisible) => !prevIsVisible)}
         className="p-2 rounded bg-gray-300 w-full hover:bg-gray-300 flex items-center justify-between gap-2"
       >
         <p>
-          {isTableVisible ? 'Hide' : 'Show'} {title || 'Table'}
+          {isVisible ? 'Hide' : 'Show'} {title || 'Table'}
         </p>
         <ArrowDown
           className={`size-4 text-gray-700 transition-transform ${
-            isTableVisible ? 'rotate-180' : ''
+            isVisible ? 'rotate-180' : ''
           }`}
         />
       </button>
 
-      {isTableVisible && (
+      {isVisible && (
         <>
-          {filterTypes && (
-            <div className="mt-4">
-              <CharacterFilters filterTypes={filterTypes} tableId={tableId} />
-            </div>
-          )}
-
-          {paginatedData.length === 0 ? (
+          {children}
+          {paginated.length === 0 ? (
             <p className="mt-4 text-center text-gray-500 italic">
-              No characters found with these filters.
+              Data not found.
             </p>
           ) : (
             <>
-              <CharacterTableBody data={paginatedData} columns={columns} />
+              <CharacterTableBody data={paginated} columns={columns} />
 
-              {!hasFilters && !isLoading && (
+              {totalPages > 1 && (
                 <PaginationControls
                   page={page}
-                  totalPages={totalVisiblePages}
-                  tableId={tableId}
-                  onPageChange={onPageChange}
+                  totalPages={totalPages}
+                  tableId={title || 'default'}
+                  onPageChange={
+                    manualPagination ? onPageChange! : setInternalPage
+                  }
                 />
               )}
             </>

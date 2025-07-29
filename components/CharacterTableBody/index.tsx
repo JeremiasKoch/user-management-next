@@ -1,21 +1,19 @@
-import { Character } from '@/api';
-
-type CharacterTableBodyProps = {
-  data: Character[];
+type CharacterTableBodyProps<T> = {
+  data: T[];
   columns: { key: string; label: string }[];
 };
 
-export const CharacterTableBody = ({
+export const CharacterTableBody = <T,>({
   data,
   columns,
-}: CharacterTableBodyProps) => {
+}: CharacterTableBodyProps<T>) => {
   return (
     <table className="min-w-full mt-2">
       <thead>
         <tr>
           {columns.map((col) => (
             <th
-              key={col.key}
+              key={`table-head-${col.key}`}
               className="border border-gray-400 px-4 py-2 text-left text-sm font-medium text-gray-700"
             >
               {col.label}
@@ -24,17 +22,17 @@ export const CharacterTableBody = ({
         </tr>
       </thead>
       <tbody>
-        {data.map((character) => (
+        {data.map((item, i) => (
           <tr
-            key={character.id}
+            key={i}
             className="hover:bg-gray-200 transition-colors duration-200"
           >
             {columns.map((col) => (
               <td
-                key={col.key}
+                key={`table-body-${col.key}`}
                 className="border border-gray-400 px-4 py-2 text-sm text-gray-700"
               >
-                {String(character[col.key as keyof Character])}
+                {String(item[col.key as keyof T])}
               </td>
             ))}
           </tr>
