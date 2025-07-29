@@ -48,14 +48,6 @@ export const CharactersTableManager = ({
 
   const rawData = isFiltering ? filteredData || [] : pagedData?.results || [];
 
-  useEffect(() => {
-    if (rawData) {
-      setCharacters(rawData);
-    } else {
-      clearCharacters();
-    }
-  }, [rawData]);
-
   const hasNoResults =
     isFiltering &&
     isErrorFiltered &&
@@ -66,6 +58,14 @@ export const CharactersTableManager = ({
   const totalPages = isFiltering
     ? Math.ceil(rawData.length / pageSize)
     : pagedData?.info.pages || 1;
+
+  useEffect(() => {
+    if (rawData) {
+      setCharacters(rawData);
+    } else {
+      clearCharacters();
+    }
+  }, [rawData]);
 
   useEffect(() => {
     if (debouncedName) {
