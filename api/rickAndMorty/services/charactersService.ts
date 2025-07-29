@@ -2,6 +2,7 @@ import {
   axiosRequest,
   rickAndMortyEndpoint,
   CharacterListResponse,
+  Character,
 } from '@/api';
 
 export const fetchCharacters = async (page: number = 1) => {
@@ -11,9 +12,23 @@ export const fetchCharacters = async (page: number = 1) => {
   });
 };
 
-export const fetchFilteredCharacters = async (name: string) => {
-  return axiosRequest<CharacterListResponse>({
-    method: 'get',
-    url: rickAndMortyEndpoint.getFilteredCharacters(name),
-  });
+export const fetchFilteredCharactersByName = async (
+  name: string
+): Promise<Character[]> => {
+  let page = 1;
+  const all: Character[] = [];
+
+  while (all.length < 50) {
+    const data = await axiosRequest<CharacterListResponse>({
+      method: 'get',
+      url: rickAndMortyEndpoint.getFilteredCharactersByName(name, page),
+    });
+
+    all.push(...data.results);
+
+    if (!data.info.next) break;
+    page++;
+  }
+
+  return all.slice(0, 50);
 };

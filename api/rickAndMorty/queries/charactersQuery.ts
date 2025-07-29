@@ -2,9 +2,8 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import {
   CharacterListResponse,
   fetchCharacters,
-  fetchFilteredCharacters,
+  fetchFilteredCharactersByName,
 } from '@/api';
-import { useDebounce } from '@/utils/debounce';
 
 export const useCharactersQuery = (page: number) => {
   return useQuery<CharacterListResponse>({
@@ -15,12 +14,11 @@ export const useCharactersQuery = (page: number) => {
   });
 };
 
-export const useFilteredCharactersQuery = (search: string) => {
-  const debouncedSearch = useDebounce(search, 3000);
-
+export const useFilteredCharactersQuery = (name: string) => {
   return useQuery({
-    queryKey: ['characters-filtered', debouncedSearch],
-    queryFn: () => fetchFilteredCharacters(debouncedSearch),
-    enabled: !!debouncedSearch,
+    queryKey: ['filtered-characters-by-name', name],
+    queryFn: () => fetchFilteredCharactersByName(name),
+    enabled: !!name,
+    staleTime: 1000 * 60 * 5,
   });
 };
