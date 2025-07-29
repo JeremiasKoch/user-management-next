@@ -8,13 +8,26 @@ export type CharacterLocation = {
   url: string;
 };
 
+export enum Status {
+  Alive = 'Alive',
+  Dead = 'Dead',
+  Unknown = 'unknown',
+}
+
+export enum Gender {
+  Male = 'Male',
+  Female = 'Female',
+  Genderless = 'Genderless',
+  Unknown = 'unknown',
+}
+
 export type Character = {
   id: number;
   name: string;
-  status: 'Alive' | 'Dead' | 'unknown';
+  status: Status;
   species: string;
   type: string;
-  gender: 'Male' | 'Female' | 'Genderless' | 'unknown';
+  gender: Gender;
   origin: CharacterOrigin;
   location: CharacterLocation;
   image: string;

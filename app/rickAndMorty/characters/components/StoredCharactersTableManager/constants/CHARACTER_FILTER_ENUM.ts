@@ -1,19 +1,8 @@
-export enum Status {
-  Alive = 'Alive',
-  Dead = 'Dead',
-  Unknown = 'unknown',
-}
-
-export enum Gender {
-  Male = 'Male',
-  Female = 'Female',
-  Genderless = 'Genderless',
-  Unknown = 'unknown',
-}
+import { Gender, Status } from '@/api';
 
 export const FILTERABLE_FIELDS_SET = new Set(['status', 'gender']);
 
 export const CHARACTER_FILTER_ENUM: Record<string, string[]> = {
-  status: ['Alive', 'Dead', 'unknown'],
-  gender: ['Male', 'Female', 'Genderless', 'unknown'],
+  status: Object.values(Status),
+  gender: Object.values(Gender),
 };
