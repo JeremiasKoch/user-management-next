@@ -12,8 +12,12 @@ type LogStore = {
   clearLogs: () => void;
 };
 
-export const useLogStore = create<LogStore>((set) => ({
+const initialState: Pick<LogStore, 'logs'> = {
   logs: [],
+};
+
+export const useLogStore = create<LogStore>((set) => ({
+  ...initialState,
   addLog: (action, context) =>
     set((state) => ({
       logs: [
@@ -25,5 +29,5 @@ export const useLogStore = create<LogStore>((set) => ({
         },
       ],
     })),
-  clearLogs: () => set({ logs: [] }),
+  clearLogs: () => set({ ...initialState }),
 }));

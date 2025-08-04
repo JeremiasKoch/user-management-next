@@ -7,8 +7,12 @@ type CharactersState = {
   clearCharacters: () => void;
 };
 
-export const useCharactersStore = create<CharactersState>((set) => ({
+const initialState: Pick<CharactersState, 'characters'> = {
   characters: [],
+};
+
+export const useCharactersStore = create<CharactersState>((set) => ({
+  ...initialState,
   setCharacters: (chars) => set({ characters: chars }),
-  clearCharacters: () => set({ characters: [] }),
+  clearCharacters: () => set({ ...initialState }),
 }));
