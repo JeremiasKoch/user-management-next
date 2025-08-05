@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import CharactersTableManager from './components/CharacterTableManager';
 import StoredCharactersTableManager from './components/StoredCharactersTableManager';
 
@@ -10,6 +11,14 @@ const columns = [
 ];
 
 export default function CharactersPage() {
+  useEffect(() => {
+    const stored = sessionStorage.getItem('scrollY');
+    if (stored) {
+      setTimeout(() => {
+        window.scrollTo(0, Number(stored));
+      }, 50);
+    }
+  }, []);
   return (
     <div className="flex flex-col gap-6">
       <CharactersTableManager title="Characters" columns={columns} />

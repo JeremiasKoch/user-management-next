@@ -8,7 +8,9 @@ import {
   PaginationControls,
 } from '@/components';
 
-export type TableToggleProps<T> = {
+export type columnIdProp = { id: string | number };
+
+export type TableToggleProps<T extends columnIdProp> = {
   title?: string;
   columns: { key: string; label: string }[];
   data: T[];
@@ -22,7 +24,7 @@ export type TableToggleProps<T> = {
   children?: ReactNode;
 };
 
-export const TableToggle = <T,>({
+export const TableToggle = <T extends columnIdProp>({
   title,
   columns,
   data,
@@ -50,12 +52,31 @@ export const TableToggle = <T,>({
     ? data
     : data.slice((page - 1) * pageSize, page * pageSize);
 
+  const handleVisibilityToggle = () => {
+    setIsVisible((prev) => {
+      localStorage.setItem('isVisible', JSON.stringify(!prev));
+
+      return !prev;
+    });
+  };
+
+  useEffect(() => {
+    const getStorePageVisibility = () => {
+      const stored = localStorage.getItem('isVisible');
+      const parsed = stored ? JSON.parse(stored) : false;
+      return parsed;
+    };
+
+    const isVisibleFromStore = getStorePageVisibility();
+    setIsVisible(isVisibleFromStore);
+  }, []);
+
   if (isLoading) return <TableSkeleton columns={columns.length} />;
 
   return (
     <div className="p-0.5 bg-gray-100">
       <button
-        onClick={() => setIsVisible((prevIsVisible) => !prevIsVisible)}
+        onClick={handleVisibilityToggle}
         className="p-2 rounded bg-gray-300 w-full hover:bg-gray-300 flex items-center justify-between gap-2"
       >
         <p>

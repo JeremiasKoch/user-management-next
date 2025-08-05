@@ -12,7 +12,10 @@ export default function Home() {
         >
           Show Rick and Morty Characters
         </Link>
-        <Link href="/user" className="p-1 rounded bg-amber-200 mb-4">
+        <Link
+          href="/rickAndMorty/characters/22"
+          className="p-1 rounded bg-amber-200 mb-4"
+        >
           Show original project users
         </Link>
       </div>

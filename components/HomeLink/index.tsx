@@ -11,7 +11,14 @@ export const HomeLink = () => {
   }
 
   return (
-    <Link href="/" className="p-2 rounded bg-cyan-200 w-fit">
+    <Link
+      href="/"
+      className="p-2 rounded bg-cyan-200 w-fit"
+      onClick={() => {
+        localStorage.removeItem('lastPage');
+        localStorage.removeItem('isVisible');
+      }}
+    >
       <HomeIcon />
     </Link>
   );

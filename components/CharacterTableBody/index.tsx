@@ -1,12 +1,25 @@
-type CharacterTableBodyProps<T> = {
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { columnIdProp } from '../TableToggle';
+
+type CharacterTableBodyProps<T extends columnIdProp> = {
   data: T[];
   columns: { key: string; label: string }[];
 };
 
-export const CharacterTableBody = <T,>({
+export const CharacterTableBody = <T extends columnIdProp>({
   data,
   columns,
 }: CharacterTableBodyProps<T>) => {
+  const router = useRouter();
+
+  const handleRowClick = (id: string) => {
+    sessionStorage.setItem('scrollY', window.scrollY.toString());
+
+    router.push(`/rickAndMorty/characters/${id}`);
+  };
+
   return (
     <table className="min-w-full mt-2">
       <thead>
@@ -25,7 +38,8 @@ export const CharacterTableBody = <T,>({
         {data.map((item, i) => (
           <tr
             key={i}
-            className="hover:bg-gray-200 transition-colors duration-200"
+            className="hover:bg-gray-200 cursor-pointer transition-colors duration-200"
+            onClick={() => handleRowClick(String(item.id))}
           >
             {columns.map((col) => (
               <td

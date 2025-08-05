@@ -59,6 +59,12 @@ export const CharactersTableManager = ({
     ? Math.ceil(rawData.length / pageSize)
     : pagedData?.info.pages || 1;
 
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    localStorage.setItem('lastPage', newPage.toString());
+    localStorage.setItem('isVisible', 'true');
+  };
+
   useEffect(() => {
     if (rawData) {
       setCharacters(rawData);
@@ -77,6 +83,16 @@ export const CharactersTableManager = ({
     addLog('Page Changed (API)', { page });
   }, [page]);
 
+  useEffect(() => {
+    const getStoredPage = () => {
+      const stored = localStorage.getItem('lastPage');
+      const parsed = Number(stored);
+      return !isNaN(parsed) && parsed > 0 ? parsed : 1;
+    };
+    const initialPage = getStoredPage();
+    setPage(initialPage);
+  }, []);
+
   return (
     <TableToggle<Character>
       title={title}
@@ -87,9 +103,8 @@ export const CharactersTableManager = ({
       manualPagination={!isFiltering}
       page={page}
       totalPages={totalPages}
-      onPageChange={setPage}
+      onPageChange={handlePageChange}
     >
-      {' '}
       <div className="mt-4">
         <GenericFilter
           label="name"

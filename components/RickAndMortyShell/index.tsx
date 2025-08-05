@@ -19,6 +19,7 @@ export const RickAndMortyShell = ({ children }: PropsWithChildren) => {
               ? 'bg-blue-600 text-white'
               : 'bg-blue-100 hover:bg-blue-200'
           }`}
+          scroll={false}
         >
           Table
         </Link>
@@ -29,6 +30,7 @@ export const RickAndMortyShell = ({ children }: PropsWithChildren) => {
               ? 'bg-green-600 text-white'
               : 'bg-green-100 hover:bg-green-200'
           }`}
+          scroll={false}
         >
           Logs
         </Link>
